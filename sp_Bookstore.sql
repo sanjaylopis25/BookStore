@@ -63,6 +63,7 @@ begin catch
 end catch
 
 select * from UserRegister
+select * from Book
 
 create procedure sp_ResetPassword
 
@@ -127,3 +128,170 @@ create procedure sp_AddingBooks
   Begin
   select * from Book where BookId=@BookId
   End
+
+
+
+create procedure sp_AddBooktoCart
+@Quantity int,
+@userId int,
+@BookId int
+As
+Begin
+Insert into Cart (Quantity,userId,BookId) values (@Quantity,@userId,@BookId)
+End
+
+
+create procedure sp_DeleteCart
+@CartId int
+As
+Begin 
+Delete Cart where CartId=@CartId
+End
+
+
+create procedure sp_UpdateCart
+@Quantity int,
+@CartId int
+As
+Begin
+update Cart set Quantity=@Quantity
+where CartId=@CartId
+End
+
+
+create procedure sp_GetAllBooksinCart
+@userId int
+As
+Begin
+select Cart.CartId,Cart.userId,Cart.BookId,Cart.Quantity , Book.BookName,Book.AuthorName,
+Book.BookDescription,Book.DiscountPrice,Book.OriginalPrice,Book.Rating,Book.Reviewer,
+Book.Image,Book.BookCount from Cart inner join Book on Cart.BookId=Book.BookId
+where Cart.userId=@userId
+End
+
+create PROCEDURE sp_CreateWishlist
+	@UserId INT,
+	@BookId INT
+AS
+BEGIN 
+	IF EXISTS(SELECT * FROM WishList WHERE BookId = @BookId AND UserId = @UserId)
+		SELECT 1;
+	ELSE
+	BEGIN
+		IF EXISTS(SELECT * FROM Book WHERE BookId = @BookId)
+		BEGIN
+			INSERT INTO WishList(UserId,BookId)
+			VALUES ( @UserId,@BookId)
+		END
+		ELSE
+			SELECT 2;
+	END
+END
+
+
+CREATE PROCEDURE sp_DeleteWishlist
+	@WishlistId INT
+AS
+BEGIN
+		DELETE FROM Wishlist WHERE WishlistId = @WishlistId
+END
+
+CREATE PROCEDURE sp_GetWishListbyUserId
+  @UserId int
+AS
+BEGIN
+	   select 
+		Book.BookId,
+		Book.BookName,
+		Book.AuthorName,
+		Book.DiscountPrice,
+		Book.OriginalPrice,
+		Book.BookDescription,
+		Book.Image,
+		Book.Rating,
+		Book.Reviewer,
+		Book.BookCount,
+		WishList.WishlistId,
+		WishList.UserId,
+		WishList.BookId
+		FROM Book
+		inner join WishList
+		on Wishlist.BookId=Book.BookId where WishList.UserId=@UserId
+End
+
+
+create procedure Sp_AddAddress(
+		@UserId int,
+        @Address varchar(600),
+		@City varchar(50),
+		@State varchar(50),
+		@TypeId int	)		
+As 
+Begin
+	IF (EXISTS(SELECT * FROM UserRegister WHERE @UserId = @UserId))
+	Begin
+	Insert into Address (UserId,Address,City,State,TypeId )
+		values (@UserId,@Address,@City,@State,@TypeId);
+	End
+	Else
+	Begin
+		Select 1
+	End
+End
+
+CREATE PROCEDURE sp_DeleteAddress
+	@AddressId int
+AS
+BEGIN
+		DELETE FROM Address WHERE AddressId=@AddressId
+END
+
+create PROCEDURE sp_UpdateAddress
+(
+@AddressId int,
+@Address varchar(max),
+@City varchar(100),
+@State varchar(100),
+@TypeId int	)
+
+AS
+BEGIN
+       If (exists(Select * from Address where AddressId=@AddressId))
+		begin
+			UPDATE Address
+			SET 
+			Address= @Address, 
+			City = @City,
+			State=@State,
+			TypeId=@TypeId 
+				WHERE AddressId=@AddressID;
+		 end
+		 else
+		 begin
+		 select 1;
+		 end
+END 
+
+
+
+
+create PROCEDURE sp_GetAllAddresses
+AS
+BEGIN
+	 begin
+	   SELECT * FROM Address ;
+   	 end
+End
+
+
+
+
+
+create PROCEDURE sp_GetAddressbyUserid
+  (
+  @UserId int
+  )
+AS
+BEGIN
+	   SELECT * FROM Address WHERE UserId=@UserId;
+END

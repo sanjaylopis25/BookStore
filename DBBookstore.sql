@@ -10,6 +10,7 @@ Password varchar(20))
 select * from UserRegister
 
 select * from Book
+select * from Cart
 
 create Table Book
 (
@@ -24,3 +25,47 @@ Rating float ,
 Reviewer int,
 BookCount int
 )
+
+create table Cart(
+CartId int primary key identity(1,1),
+Quantity int,
+userId int Foreign Key References UserRegister(UserId),
+BookId int Foreign Key References Book(BookId))
+
+create table WishList
+(
+	WishlistId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	UserId INT NOT NULL
+	FOREIGN KEY (UserId) REFERENCES UserRegister(UserId),
+	BookId INT NOT NULL
+	FOREIGN KEY (BookId) REFERENCES Book(BookId)	
+);
+
+select * from WishList
+
+
+create table AddressType
+(
+	TypeId int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Type varchar(20)
+);
+INSERT INTO AddressType (Type) VALUES ('Home')
+INSERT INTO AddressType (Type) VALUES ('Work')
+INSERT INTO AddressType (Type) VALUES ('Other')
+
+
+select * from AddressType
+select * from Address
+
+
+create table Address
+(
+    AddressId int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	UserId INT NOT NULL
+	FOREIGN KEY (UserId) REFERENCES UserRegister(UserId),
+	Address varchar(max) not null,
+	City varchar(100),
+	State varchar(100),
+	TypeId int
+	FOREIGN KEY (TypeId) REFERENCES AddressType(TypeId)
+);
