@@ -69,3 +69,37 @@ create table Address
 	TypeId int
 	FOREIGN KEY (TypeId) REFERENCES AddressType(TypeId)
 );
+
+create table BooksOrder(
+OrderId int primary key identity(1,1),
+TotalPrice Money,
+BookQuantity int,
+OrderDate Date,
+userId int Foreign Key References UserRegister(userId),
+BookId int Foreign Key References Book(BookId),
+AddressId int Foreign Key References Address(AddressId)
+)
+
+create table BooksOrder(
+OrderId int primary key identity(1,1),
+TotalPrice Money,
+BookQuantity int,
+OrderDate Date,
+UserId int Foreign Key References UserRegister(UserId),
+BookId int Foreign Key References Book(BookId),
+AddressId int Foreign Key References Address(AddressId)
+)
+
+select * from BooksOrder
+
+create Table FeedBackBook(
+FeedbackId int not null identity (1,1) primary key,
+FeedBackFromUserName varchar(15),
+Comments varchar(50),
+Ratings int,
+UserId int Foreign Key References UserRegister(UserId),
+BookId int Foreign Key References Book(BookId))
+
+drop table FeedBackBook
+
+select * from FeedBackBook

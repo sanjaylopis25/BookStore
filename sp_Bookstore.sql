@@ -295,3 +295,58 @@ AS
 BEGIN
 	   SELECT * FROM Address WHERE UserId=@UserId;
 END
+
+
+
+
+create procedure sp_BooksOrder
+@TotalPrice Money,
+@BookQuantity int,
+@OrderDate Date,
+@UserId int,
+@BookId int,
+@AddressId int
+As
+Begin
+Insert into BooksOrder (TotalPrice,BookQuantity,OrderDate,UserId,BookId,AddressId)
+values (@TotalPrice,@BookQuantity,@OrderDate,@UserId,@BookId,@AddressId)
+End
+
+
+create procedure sp_GetAllOrders
+@UserId int
+As
+Begin
+select BooksOrder.OrderId,BooksOrder.UserId,BooksOrder.BookId,BooksOrder.AddressId,BooksOrder.BookQuantity,BooksOrder.TotalPrice,BooksOrder.OrderDate,Book.BookName,Book.AuthorName,
+Book.BookDescription,Book.DiscountPrice,Book.OriginalPrice,Book.Rating,Book.Reviewer,
+Book.Image,Book.BookCount from BooksOrder inner join Book on BooksOrder.BookId=Book.BookId
+where BooksOrder.UserId=@UserId
+End
+
+create procedure sp_DeleteOrder
+@OrderId int
+As
+Begin 
+Delete BooksOrder where OrderId=@OrderId
+End
+
+
+create procedure sp_AddFeedBackBook
+@FeedBackFromUserName varchar(15),
+@Comments varchar(50),
+@Ratings int,
+@userId int,
+@BookId int
+As
+Begin
+Insert into FeedBackBook(FeedBackFromUserName,Comments,Ratings,userId,BookId) values 
+ (@FeedBackFromUserName,@Comments,@Ratings,@userId,@BookId)
+ End
+
+
+ create procedure sp_GetAllFeedBack
+ @BookId int
+ As
+ Begin
+ select * from FeedBackBook where BookId=@BookId
+ End
